@@ -1,5 +1,3 @@
-import os
-
 if __name__ == "__main__":
     f = open("./input.txt", "r")
     input_numbers = [int(num) for num in f.read().splitlines()]
