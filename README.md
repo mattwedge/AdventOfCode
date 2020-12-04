@@ -1,3 +1,4 @@
 # AdventOfCode
 
-Repo of Advent Of Code solutions!
+Advent Of Code solutions repo!
+https://adventofcode.com/
