@@ -9,9 +9,8 @@ if __name__ == "__main__":
     steps = [a.split(" ") for a in f.read().splitlines()]
     for step in steps:
         step[1] = int(step[1])
-        
-    for step in steps:
 
+    for step in steps:
         toggle_step(step)
 
         acc = 0
