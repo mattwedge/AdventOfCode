@@ -23,6 +23,28 @@ def check_match(tile1, tile2):
 def get_subarray(arr, i, j, shape):
     return arr[i:i+shape[0], j:j+shape[1]]
 
+def orientate(im, pos1, pos2, orientation):
+    rotation_needed = (180 + pos1 - pos2) % 360
+    num_90_rots = rotation_needed // 90
+    for i in range(num_90_rots):
+        im = np.rot90(im, -1)
+    if orientation == -1:
+        if pos1 in [0, 180]:
+            im = np.fliplr(im)
+        else:
+            im = np.flipud(im)
+    return im
+
+def get_next_coords(current_coords, pos):
+    if pos == 0:
+        return (current_coords[0], current_coords[1] - 1)
+    elif pos == 90:
+        return (current_coords[0] + 1, current_coords[1])
+    elif pos == 180:
+        return (current_coords[0], current_coords[1] + 1)
+    elif pos == 270:
+        return (current_coords[0] - 1, current_coords[1])
+
 if __name__ == "__main__":
     tiles = open("./input.txt", "r").read().split("\n\n")
     tiles = [tile.split("\n") for tile in tiles]
@@ -48,15 +70,7 @@ if __name__ == "__main__":
                     match = check_match(tile["image"], tile2["image"])
                     if match:
                         pos1, pos2, orientation = match
-                        rotation_needed = (180 + pos1 - pos2) % 360
-                        num_90_rots = rotation_needed // 90
-                        for i in range(num_90_rots):
-                            tile2["image"] = np.rot90(tile2["image"], -1)
-                        if orientation == -1:
-                            if pos1 in [0, 180]:
-                                tile2["image"] = np.fliplr(tile2["image"])
-                            else:
-                                tile2["image"] = np.flipud(tile2["image"])
+                        tile2["image"] = orientate(tile2["image"], pos1, pos2, orientation)
                         orientated_tiles.append(tile_id2)
                         new_orientated_tiles.append(tile_id2)
                         tile["matches"][pos1] = tile_id2
@@ -72,14 +86,7 @@ if __name__ == "__main__":
                 if tile_id2 in positioned_tile_ids:
                     continue
                 tile_pos = positioned_tile_ids[tile_id]
-                if pos == 0:
-                    tile_2_pos = (tile_pos[0], tile_pos[1] - 1)
-                elif pos == 90:
-                    tile_2_pos = (tile_pos[0] + 1, tile_pos[1])
-                elif pos == 180:
-                    tile_2_pos = (tile_pos[0], tile_pos[1] + 1)
-                elif pos == 270:
-                    tile_2_pos = (tile_pos[0] - 1, tile_pos[1])
+                tile_2_pos = get_next_coords(tile_pos, pos)
                 positioned_tile_ids[tile_id2] = tile_2_pos
                 new_positioned_tiles.append(tile_id2)
         last_positioned_tiles = new_positioned_tiles
