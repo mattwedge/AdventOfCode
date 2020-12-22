@@ -2,12 +2,12 @@ def hash_players(players):
     return "-".join([str(i) for i in players[0]]) + "^" + "-".join([str(i) for i in players[1]])
 
 def play_game(players):
-    saved_positions = {}
+    saved_positions = set()
     while players[0] and players[1]:
         if hash_players(players) in saved_positions:
             return 0, players[0]
 
-        saved_positions[hash_players(players)] = True
+        saved_positions.add(hash_players(players))
         c0 = players[0][0]
         c1 = players[1][0]
         if ((c0 > len(players[0]) - 1) or (c1 > len(players[1]) - 1)):
