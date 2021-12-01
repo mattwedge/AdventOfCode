@@ -1,3 +1,5 @@
+# 5:14
+
 def get_num_increases(arr):
     return len([pair for pair in zip(arr, arr[1:]) if pair[1] > pair[0]])
 
