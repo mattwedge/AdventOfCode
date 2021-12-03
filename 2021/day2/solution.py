@@ -1,6 +1,6 @@
 # 5:15
 
-def part1():
+def part_1():
     f = open("./input.txt", "r")
     input_instructions = [ln.split(" ") for ln in f.read().splitlines()]
     total_forward = sum([int(instr[1]) for instr in input_instructions if instr[0] == "forward"])
@@ -11,7 +11,7 @@ def part1():
 
     return total_depth * total_forward
 
-def part2():
+def part_2():
     f = open("./input.txt", "r")
     input_instructions = [ln.split(" ") for ln in f.read().splitlines()]
     total_forward = sum([int(instr[1]) for instr in input_instructions if instr[0] == "forward"])
@@ -30,5 +30,5 @@ def part2():
     return depth * total_forward
 
 if __name__ == "__main__":
-    print(part1())
-    print(part2())
+    print(part_1())
+    print(part_2())
