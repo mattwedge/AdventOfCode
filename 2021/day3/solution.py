@@ -2,6 +2,7 @@
 
 from collections import Counter
 
+# Returns `default` if equal number of 0s and 1s
 def get_most_common(lines, bit_position, default="1"):
     counts = Counter([ln[bit_position] for ln in lines]).most_common()
     if counts[0][1] == counts[1][1]:
