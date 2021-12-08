@@ -7,7 +7,7 @@ if __name__ == "__main__":
     input_lines = [[s.split(" ") for s in l.split(" | ") ] for l in f.read().splitlines()]
     
     # Part 1
-    print(sum([len([d for d in b if len(d) in [2, 4, 3, 7]]) for [_, b] in input_lines]))
+    print(sum(len([d for d in b if len(d) in [2, 4, 3, 7]]) for [_, b] in input_lines))
 
     # Part 2
     example_mapping = {
@@ -49,7 +49,6 @@ if __name__ == "__main__":
             if len(possible_patterns) == 1:
                 known_digits[unknown_digit] = possible_patterns[0]
             else:
-                print(len(possible_patterns))
                 raise Exception("Couldn't uniquely identify digit")
 
 
