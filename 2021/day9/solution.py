@@ -8,6 +8,8 @@ if __name__ == "__main__":
     f = open("./input.txt", "r")
     input_matrix = np.array([[int(a) for a in list(ln)] for ln in f.read().splitlines()])
 
+
+    # Part 1
     comparison_matrices = [
         np.concatenate((input_matrix[:, 1:], np.ones((100, 1)) * np.inf), axis=1),
         np.concatenate((np.ones((100, 1)) * np.inf, input_matrix[:, :-1]), axis=1),
@@ -23,6 +25,8 @@ if __name__ == "__main__":
     ]
     print(sum(danger_points) + len(danger_points))
 
+
+    # Part 2
     structure = np.array([
         [0,1,0],
         [1,1,1],
