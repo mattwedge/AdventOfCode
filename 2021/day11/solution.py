@@ -1,6 +1,5 @@
 # 33:08
 
-from collections import Counter
 import numpy as np
 
 if __name__ == "__main__":
