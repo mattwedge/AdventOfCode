@@ -27,14 +27,16 @@ operations = {
     7: eq
 }
 
+version_sum = 0
+
 def parse_binary_input(input, max_packets=np.Inf):
+    global version_sum
     if "1" not in input:
         return [], ""
 
     if max_packets == 0:
         return [], input
 
-    version_sum = 0
     iter_input = input
     
     version = int(iter_input[:3], 2)
@@ -42,13 +44,10 @@ def parse_binary_input(input, max_packets=np.Inf):
     packet_type_id = int(iter_input[3:6], 2)
     if packet_type_id == 4:
         binary_val = ""
-
-        current_index = 6
-        prefix = iter_input[current_index]
-
-        binary_val += iter_input[current_index + 1: current_index + 5]
-        current_index += 5
-
+        prefix = iter_input[6]
+        binary_val += iter_input[7: 11]
+        
+        current_index = 11
         while prefix == "1":
             prefix = iter_input[current_index]
             binary_val += iter_input[current_index + 1: current_index + 5]
@@ -89,4 +88,6 @@ if __name__ == "__main__":
     while not len(bin_input) % 4 == 0:
         bin_input = "0" + bin_input
 
-    print(parse_binary_input(bin_input)[0][0])
+    res = parse_binary_input(bin_input)[0][0]
+    print(version_sum)
+    print(res)
