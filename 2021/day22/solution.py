@@ -6,6 +6,7 @@ from functools import reduce
 from collections import Counter
 
 def subtract_cube(start_cube, remove_cube):
+    start_cube = copy.deepcopy(start_cube)
     all_new_cubes = []
 
     for i in range(3):
@@ -19,11 +20,13 @@ def subtract_cube(start_cube, remove_cube):
             below_x = copy.deepcopy(start_cube)
             below_x[i][1] = remove_cube[i][0] - 1
             all_new_cubes.append(below_x)
+            start_cube[i][0] = remove_cube[i][0]
 
         if start_cube[i][1] > remove_cube[i][1]:
             above_x = copy.deepcopy(start_cube)
             above_x[i][0] = remove_cube[i][1] + 1
             all_new_cubes.append(above_x)
+            start_cube[i][1] = remove_cube[i][1]
 
     return all_new_cubes
 
@@ -91,10 +94,4 @@ if __name__ == "__main__":
 
             all_cubes = new_cubes
 
-
-    # Slight optimisation - this still takes a few minutes to run. TODO - speed up
-    def contains_cube(inner, outer):
-        return all(outer[i][0] <= inner[i][0] and outer[i][1] >= inner[i][1] for i in range(3))
-
-    all_cubes = [cube for cube in all_cubes if not any(contains_cube(cube, outer_cube) for outer_cube in [c for c in all_cubes if not c == cube])]
     print(count_volume(all_cubes))
