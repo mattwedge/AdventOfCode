@@ -1,7 +1,4 @@
-import json
-import numpy as np
-from itertools import combinations
-from collections import defaultdict, Counter
+# 38:24
 
 if __name__ == "__main__":
     f = open("./input.txt", "r")
@@ -9,7 +6,6 @@ if __name__ == "__main__":
     player_1_pos = int(input[0][-1])
     player_2_pos = int(input[1][-1])
 
-    print(player_1_pos, player_2_pos)
     player_positions = [player_1_pos, player_2_pos]
 
     scores = [0, 0]
