@@ -28,7 +28,7 @@ def parse_part2_line(line):
 
 if __name__ == "__main__":
     f = open("./input.txt", "r")
-    input_lines = [line for line in f.read().splitlines()]
+    input_lines = f.read().splitlines()
 
     print(calculate_score(input_lines))
     print(calculate_score([parse_part2_line(ln) for ln in input_lines]))
