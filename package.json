@@ -1,0 +1,22 @@
+{
+  "name": "adventofcode",
+  "version": "1.0.0",
+  "description": "Advent Of Code solutions repo! https://adventofcode.com/",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mattwedge/AdventOfCode.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mattwedge/AdventOfCode/issues"
+  },
+  "homepage": "https://github.com/mattwedge/AdventOfCode#readme",
+  "devDependencies": {
+    "@types/node": "^20.10.7"
+  }
+}
