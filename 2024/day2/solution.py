@@ -25,16 +25,9 @@ if __name__ == "__main__":
     for line in input_lines:
         parsed = [int(a) for a in line.split()]
         if any(
-            [ check_valid(parsed) ]
-            + [
-                check_valid(parsed[:i] + parsed[i+1:])
-                for i in range(len(parsed))
-            ]
+            check_valid(parsed[:i] + parsed[i+1:])
+            for i in range(len(parsed))
         ):
             num_almost_safe += 1
         
     print(f"{num_almost_safe = }")
-
-
-
-    
