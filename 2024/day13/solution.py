@@ -14,7 +14,7 @@ OFFSET = np.array([10000000000000,10000000000000])
 
 def solve(machine, with_offset=False):
     target = np.array([machine[4], machine[5]]) + OFFSET if with_offset else np.array([machine[4], machine[5]])
-    num_a, num_b = np.linalg.inv(np.array([[machine[0], machine[1]], [machine[2], machine[3]]]).T).dot(target)
+    num_a, num_b = np.linalg.inv(np.array([[machine[0], machine[2]], [machine[1], machine[3]]])).dot(target)
     
     # Ignore rounding errors
     if round(num_a, 3).is_integer() and round(num_b, 3).is_integer():
