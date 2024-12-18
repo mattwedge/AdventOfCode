@@ -19,7 +19,6 @@ for line in f.read().splitlines():
 def combo(operand):
     if operand < 4:
         return operand
-    
     if operand == 4:
         return registers[0]
     if operand == 5:
