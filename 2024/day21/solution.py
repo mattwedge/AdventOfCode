@@ -1,5 +1,5 @@
+from collections import Counter
 import re
-import numpy as np
 
 lines = open("./input.txt", "r").read().splitlines()
 
@@ -34,11 +34,16 @@ dirmovements = {
     "A": 0,
 }
 
-inv_dirpositions = {v: k for k, v in dirpositions.items()}
-inv_charpositions = {v: k for k, v in charpositions.items()}
+def is_valid_movement(dirs, currpos, dir_pad=False):
+    posnow = currpos
+    for dir in dirs:
+        posnow += dirmovements[dir]
+        if posnow == (2 + 1j if dir_pad else 2):
+            return False
 
+    return True
 
-def get_dirs_for_num_char(char, currpos):
+def get_directions_for_num_char(char, currpos):
     charposition = charpositions[char]
     yoffs = int((charposition - currpos).imag)
     xoffs = int((charposition - currpos).real)
@@ -46,21 +51,28 @@ def get_dirs_for_num_char(char, currpos):
     xdir = "<" if xoffs >= 0 else ">"
     ydir = "^" if yoffs >= 0 else "v"
 
-    reses =  list(set([xdir * abs(xoffs) + ydir * abs(yoffs) + "A", ydir * abs(yoffs) + xdir * abs(xoffs) + "A"]))
+    directions_list =  list(set([xdir * abs(xoffs) + ydir * abs(yoffs) + "A", ydir * abs(yoffs) + xdir * abs(xoffs) + "A"]))
+    directions_list = [directions for directions in directions_list if is_valid_movement(directions, currpos)]
 
-    realres = []
-    for res in reses:
-        fake = False
-        posnow = currpos
-        for v in res:
-            posnow += dirmovements[v]
-            if posnow == 2:
-                fake = True
+    if len(directions_list) == 1:
+        return directions_list[0]
 
-        if not fake:
-            realres.append(res)
 
-    return realres
+    if "<^^^A" in directions_list:
+        return "<^^^A"
+
+    if "vv>A" in directions_list:
+        return "vv>A"
+
+    if "^^>A" in directions_list:
+        return "^^>A"
+
+    if "<^A" in directions_list:
+        return "<^A"
+
+    if "<^^A" in directions_list:
+        return "<^^A"
+
 
 def get_dirs_for_dir_char(char, currpos):
     dirposition = dirpositions[char]
@@ -70,90 +82,74 @@ def get_dirs_for_dir_char(char, currpos):
     xdir = "<" if xoffs >= 0 else ">"
     ydir = "^" if yoffs >= 0 else "v"
 
-    return list(set([xdir * abs(xoffs) + ydir * abs(yoffs) + "A", ydir * abs(yoffs) + xdir * abs(xoffs) + "A"]))
+    directions_list = list(set([xdir * abs(xoffs) + ydir * abs(yoffs) + "A", ydir * abs(yoffs) + xdir * abs(xoffs) + "A"]))
+    directions_list = [directions for directions in directions_list if is_valid_movement(directions, currpos, dir_pad=True)]
+
+    if "<vA" in directions_list:
+        directions_list = ["<vA"]
+
+    if "^>A" in directions_list:
+        directions_list = ["^>A"]
+
+    if "<^A" in directions_list:
+        directions_list = ["<^A"]
+
+    if "v>A" in directions_list:
+        directions_list = ["v>A"]
+
+    return directions_list[0]
 
 def get_dirs_for_num_code(code, currpos):
     posnow = currpos
-    dirs = []
+    dirs = ""
     for char in code:
-        newdirs = []
-        chardirs = get_dirs_for_num_char(char, posnow)
-        if dirs:
-            for chardir in chardirs:
-                for dir in dirs:
-                    newdirs.append(dir + chardir)
-
-        else:
-            newdirs = chardirs
-
-        dirs = newdirs
+        chardir = get_directions_for_num_char(char, posnow)
+        dirs += chardir
         posnow = charpositions[char]
 
     return dirs
 
-def get_dirs_for_dir_code(code, currpos):
-    posnow = currpos
-    dirs = []
+def get_dirs_for_dir_code(code):
+    posnow = dirpositions["A"]
+    dirs = ""
     for char in code:
-        newdirs = []
-        dirdirs = get_dirs_for_dir_char(char, posnow)
-        if dirs:
-            for chardir in dirdirs:
-                for dir in dirs:
-                    newdirs.append(dir + chardir)
-
-        else:
-            newdirs = dirdirs
-
-        dirs = newdirs
+        chardir = get_dirs_for_dir_char(char, posnow)
+        dirs += chardir
         posnow = dirpositions[char]
 
     return dirs
 
 
+def get_length(motif_counts: Counter):
+    total_length = 0
+    for motif, motif_count in motif_counts.items():
+        total_length += len(motif) * motif_count
+    return total_length
 
-num_bots = 2
-total = 0
-for code in lines:
-    print(code)
-    dircodes = get_dirs_for_num_code(code, charpositions["A"])
-    for i in range(num_bots):
-        print(dircodes)
-        print(i)
-        newdircodes = []
-        for dircode in dircodes:
-            newdircodes += get_dirs_for_dir_code(dircode, dirpositions["A"])
+
+def get_motif_downstream_counts(motif) -> Counter:
+    motif_sol = get_dirs_for_dir_code(motif)
+    return Counter([d + "A" for d in motif_sol.split("A")][:-1])
+
+
+def get_sol_counts_for_motif_counts(motif_counts: Counter):
+    sol_counts = Counter()
+    for motif, motif_count in motif_counts.items():
+        motif_downstream_counts = get_motif_downstream_counts(motif)
+        for k, v in motif_downstream_counts.items():
+            sol_counts[k] += v * motif_count
+
+    return sol_counts
+
+for num_bots in [2, 25]:
+    total = 0
+    for code in lines:
+        dircode = get_dirs_for_num_code(code, charpositions["A"])
+        motif_counts = Counter([d + "A" for d in dircode.split("A")][:-1])
+        for i in range(num_bots):
+            motif_counts = get_sol_counts_for_motif_counts(motif_counts)
         
-        mini = min(len(c) for c in newdircodes)
-        dircodes = [c for c in newdircodes if len(c) == mini]
+        sol_length = get_length(motif_counts)
+        total += sol_length * int(re.findall("\d+", code)[0])
 
-    mini = min(len(c) for c in dircodes)
-    total += mini * int(re.findall("\d+", code)[0])
-
-print(total)
-
-
-
-# def parse_dirs(dirs):
-#     res = ""
-#     pos0 = dirpositions["A"]
-#     pos1 = dirpositions["A"]
-#     pos2 = charpositions["A"]
-#     pos3 = 0 + 0j
-#     for dir in dirs:
-#         if dir == "A":
-#             if inv_dirpositions[pos0] == "A":
-#                 if inv_dirpositions[pos1] == "A":
-#                     res += inv_charpositions[pos2]
-#                 else:
-#                     pos2 += dirmovements[inv_dirpositions[pos1]]
-#             else:
-#                 pos1 += dirmovements[inv_dirpositions[pos0]]
-#         else:
-#             pos0 += dirmovements[dir]
-
-#     return res
-
-# print(parse_dirs("<vA<AA>>^AA<Av>A^AvA^Av<<A>>^AAvA^A<vA>^AA<A>A<vA<A>>^AAAvA<^A>A"))
-# print(parse_dirs("<v<A>>^A<vA<A>>^AAvAA<^A>A<v<A>>^AAvA^A<vA>^AA<A>A<v<A>A>^AAAvA<^A>A"))
-
+    print(total)
