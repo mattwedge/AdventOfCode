@@ -58,18 +58,15 @@ def get_directions_for_num_char(char, currpos):
         return directions_list[0]
 
 
+    # Experimentally determined that these are the best options
     if "<^^^A" in directions_list:
         return "<^^^A"
-
     if "vv>A" in directions_list:
         return "vv>A"
-
     if "^^>A" in directions_list:
         return "^^>A"
-
     if "<^A" in directions_list:
         return "<^A"
-
     if "<^^A" in directions_list:
         return "<^^A"
 
@@ -85,19 +82,19 @@ def get_dirs_for_dir_char(char, currpos):
     directions_list = list(set([xdir * abs(xoffs) + ydir * abs(yoffs) + "A", ydir * abs(yoffs) + xdir * abs(xoffs) + "A"]))
     directions_list = [directions for directions in directions_list if is_valid_movement(directions, currpos, dir_pad=True)]
 
+
+    if len(directions_list) == 1:
+        return directions_list[0]
+
+    # Experimentally determined that these are the best options
     if "<vA" in directions_list:
-        directions_list = ["<vA"]
-
+        return "<vA"
     if "^>A" in directions_list:
-        directions_list = ["^>A"]
-
+        return "^>A"
     if "<^A" in directions_list:
-        directions_list = ["<^A"]
-
+        return "<^A"
     if "v>A" in directions_list:
-        directions_list = ["v>A"]
-
-    return directions_list[0]
+        return "v>A"
 
 def get_dirs_for_num_code(code, currpos):
     posnow = currpos
